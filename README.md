@@ -1,6 +1,6 @@
 # 🛒 BLISCO — Supermercado Virtual 3D
 
-**El primer supermercado virtual 3D del mundo donde podés comprar productos reales.**  
+**El supermercado virtual 3D donde podés comprar productos reales.**  
 > Entrás, caminás, elegís, y tu pedido llega directo por WhatsApp.
 
 🌐 **[Visitá la tienda → supermercadoblisco.github.io](https://supermercadoblisco.github.io/)**
@@ -64,7 +64,7 @@ El comercio electrónico tradicional lleva décadas sin una innovación real en 
 
 El cliente compra desde su computadora como si estuviera físicamente en el local.
 
-Estamos en etapa temprana, con producto funcionando y primeros clientes reales. Si te interesa ser parte de lo que viene, estamos abiertos a conversarlo.
+Estamos en etapa temprana, con producto funcionando y os clientes reales. Si te interesa ser parte de lo que viene, estamos abiertos a conversarlo.
 
 📩 **[bliscolp2025@gmail.com](mailto:bliscolp2025@gmail.com)**
 
