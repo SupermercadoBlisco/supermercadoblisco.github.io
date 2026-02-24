@@ -253,7 +253,8 @@ function openWhatsAppCheckout() {
     }
 
     const message = buildWhatsAppMessage(cart);
-    const whatsappURL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+    const encodedMessage = encodeURIComponent(message).replace(/%20/g, '+');
+    const whatsappURL = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodedMessage}`;
     window.open(whatsappURL, '_blank');
     showNotification('📱 Abriendo WhatsApp...');
     console.log('📱 WhatsApp abierto con pedido');
@@ -263,25 +264,25 @@ function openWhatsAppCheckout() {
  * Construir mensaje de WhatsApp con el pedido
  */
 function buildWhatsAppMessage(cart) {
-    let message = '🛒 *PEDIDO DEL SUPERMERCADO VIRTUAL 3D*\n\n';
+    let message = '🛒 *PEDIDO DE BLISCO - SUPERMERCADO VIRTUAL 3D*\n\n';
 
-    message += '📦 *Productos:*\n';
+    message += '📦 *Productos:*\n\n';
     cart.forEach((item, index) => {
         const subtotal = item.price * item.quantity;
-        message += `${index + 1}. ${item.emoji} ${item.name}\n`;
+        message += `${index + 1}. ${item.name}\n`;
         message += `   Cantidad: ${item.quantity} × $${item.price} = $${subtotal}\n\n`;
     });
 
     const total = getCartTotal();
     message += '━━━━━━━━━━━━━━━━━\n';
-    message += `💰 *TOTAL: $${total}*\n`;
+    message += `*TOTAL: $${total}*\n`;
     message += '━━━━━━━━━━━━━━━━━\n\n';
 
     const itemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-    message += `📊 Total de items: ${itemCount}\n`;
+    message += `📊 Total de ítems: ${itemCount}\n`;
     message += `📅 Fecha: ${new Date().toLocaleDateString('es-AR')}\n`;
     message += `🕐 Hora: ${new Date().toLocaleTimeString('es-AR')}\n\n`;
-    message += '¡Gracias por tu compra! 😊';
+    message += 'Enseguida nos comunicaremos contigo. \n¡Gracias por tu compra! 😊';
 
     return message;
 }
