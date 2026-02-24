@@ -8,6 +8,7 @@
 ---
 
 ![BLISCO Supermercado Virtual](./images/preview.png)
+![BLISCO Supermercado Virtual](./images/preview2.png)
 
 ---
 
