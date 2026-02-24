@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supermercado Virtual 3D</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Canvas de Three.js -->
+    <canvas id="gameCanvas"></canvas>
+
+    <!-- Overlay de pausa -->
+    <div id="pauseOverlay">
+        <div id="pauseCenter">
+            <div id="pauseLabel">PAUSA</div>
+            <div id="pauseClickHint">Hacé click para continuar</div>
+        </div>
+    </div>
+
+    <!-- Flecha al carrito (se muestra solo en pausa, controlada por JS) -->
+    <div id="pauseCartArrow">
+        <span>CARRITO</span>
+        <svg width="48" height="24" viewBox="0 0 48 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M2 12 H44 M34 4 L44 12 L34 20" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </div>
+    
+    <!-- Instrucciones arriba a la izquierda -->
+    <div id="instructions-hud">
+        <h3>🎮 Controles</h3>
+        <p><strong>WASD</strong> - Moverte</p>
+        <p><strong>SHIFT</strong> - Correr</p>
+        <p><strong>C</strong> - Agacharse</p>
+        <p><strong>Mouse</strong> - Mirar</p>
+        <p><strong>Click</strong> - Ver producto</p>
+        <p><strong>ESC</strong> - Pausa</p>
+    </div>
+
+    <!-- Cruceta en el centro de la pantalla -->
+    <div id="crosshair">
+        <div class="crosshair-dot"></div>
+        <div class="crosshair-line crosshair-top"></div>
+        <div class="crosshair-line crosshair-bottom"></div>
+        <div class="crosshair-line crosshair-left"></div>
+        <div class="crosshair-line crosshair-right"></div>
+    </div>
+
+    <!-- Panel del Carrito -->
+    <div id="cartPanel">
+        <div id="cartHeader">
+            <h2>🛒 Mi Carrito</h2>
+            <span id="itemCount">0 items</span>
+        </div>
+        <div id="cartItems"></div>
+        <div id="cartActions">
+            <button id="clearCart" class="btn-secondary">🗑️ Vaciar</button>
+            <button id="goToCheckout" class="btn-primary">💬 Ir a Caja</button>
+        </div>
+    </div>
+
+    <!-- Notificación flotante -->
+    <div id="notification"></div>
+
+    <!-- FPS Counter -->
+    <div id="fpsCounter">FPS: 60</div>
+
+    <!-- Importar Three.js desde CDN -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <!-- Scripts modulares -->
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,739 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+    overflow: hidden;
+    background: #000;
+    color: #fff;
+}
+
+/* Canvas de Three.js */
+#gameCanvas {
+    display: block;
+    width: 100vw;
+    height: 100vh;
+}
+
+/* ========================================
+   INSTRUCCIONES - ARRIBA IZQUIERDA
+   ======================================== */
+#instructions-hud {
+    position: fixed;
+    top: 30px;
+    left: 30px;
+    background: rgba(20, 20, 30, 0.9);
+    backdrop-filter: blur(20px);
+    padding: 20px 24px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 600;
+    pointer-events: auto;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+#instructions-hud h3 {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: #fff;
+    letter-spacing: -0.3px;
+}
+
+#instructions-hud p {
+    font-size: 13px;
+    margin: 6px 0;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.5;
+}
+
+#instructions-hud strong {
+    color: #667eea;
+    font-weight: 600;
+}
+
+/* ========================================
+   CRUCETA (CROSSHAIR)
+   ======================================== */
+#crosshair {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+.crosshair-dot {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 3px;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.5);
+}
+
+.crosshair-top, .crosshair-bottom {
+    position: absolute;
+    width: 2px;
+    height: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.crosshair-top    { bottom: calc(50% + 4px); }
+.crosshair-bottom { top: calc(50% + 4px); }
+
+.crosshair-left, .crosshair-right {
+    position: absolute;
+    width: 8px;
+    height: 2px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.crosshair-left  { right: calc(50% + 4px); }
+.crosshair-right { left: calc(50% + 4px); }
+
+/* ========================================
+   PANEL DEL CARRITO
+   ======================================== */
+
+#cartPanel {
+    position: fixed;
+    top: 30px;
+    right: 30px;
+    width: 340px;
+    max-height: 85vh;
+    background: rgba(20, 20, 30, 0.95);
+    backdrop-filter: blur(30px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 24px;
+    z-index: 600;
+    pointer-events: auto;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+#cartHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    gap: 10px;
+}
+
+#cartHeader h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.5px;
+    flex: 1;
+}
+
+#itemCount {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+#cartItems {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    max-height: 450px;
+}
+
+/* Scroll personalizado minimalista */
+#cartItems::-webkit-scrollbar {
+    width: 6px;
+}
+
+#cartItems::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 10px;
+}
+
+#cartItems::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+}
+
+#cartItems::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Item del carrito */
+.cart-item {
+    background: rgba(255, 255, 255, 0.04);
+    padding: 14px;
+    margin-bottom: 10px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.cart-item:hover {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(255, 255, 255, 0.12);
+    transform: translateX(-3px);
+}
+
+.cart-item-info {
+    flex: 1;
+}
+
+.cart-item-name {
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.cart-item-quantity {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.remove-item {
+    background: rgba(255, 71, 87, 0.15);
+    border: 1px solid rgba(255, 71, 87, 0.3);
+    color: #ff4757;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    font-weight: 600;
+}
+
+.remove-item:hover {
+    background: rgba(255, 71, 87, 0.25);
+    border-color: rgba(255, 71, 87, 0.5);
+    transform: scale(1.05);
+}
+
+/* Mensaje carrito vacío */
+.empty-cart {
+    text-align: center;
+    padding: 60px 20px;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.empty-cart-icon {
+    font-size: 56px;
+    margin-bottom: 15px;
+    opacity: 0.3;
+}
+
+/* Botones */
+#cartActions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-primary, .btn-secondary {
+    flex: 1;
+    padding: 14px 20px;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    font-size: 14px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.btn-primary:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+/* ========================================
+   CARRITO MINIMIZADO
+   ======================================== */
+.minimize-cart-btn {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.7);
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    min-height: 32px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.minimize-cart-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.9);
+    transform: scale(1.1);
+}
+
+.cart-minimized #cartItems,
+.cart-minimized #cartActions {
+    display: none;
+}
+
+.cart-minimized {
+    width: auto !important;
+    max-width: 340px;
+    max-height: auto !important;
+    padding: 16px 20px !important;
+}
+
+.cart-minimized #cartHeader {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+    border-bottom: none !important;
+}
+
+/* ========================================
+   MODAL DE PRODUCTO
+   ======================================== */
+.product-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    animation: fadeIn 0.3s ease;
+    cursor: default !important;
+}
+
+.product-modal * {
+    cursor: default !important;
+}
+
+.product-modal-content {
+    background: linear-gradient(135deg, rgba(30, 30, 40, 0.98), rgba(20, 20, 30, 0.98));
+    border-radius: 24px;
+    max-width: 500px;
+    width: 90%;
+    overflow: hidden;
+    box-shadow: 0 30px 90px rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    animation: scaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.modal-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: #fff;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 24px;
+    cursor: pointer !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.modal-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(90deg);
+    cursor: pointer !important;
+}
+
+.product-modal-image {
+    height: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    margin-top: 60px;
+}
+
+.product-emoji {
+    font-size: 120px;
+    filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.3));
+}
+
+.product-real-image {
+    max-width: 80%;
+    max-height: 80%;
+    object-fit: contain;
+    filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.3));
+    animation: floatSpin 2s ease-in-out infinite;
+    transform-style: preserve-3d;
+    transform-origin: center bottom;
+}
+
+.product-modal-info {
+    padding: 30px;
+}
+
+.product-modal-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #fff;
+    letter-spacing: -0.5px;
+}
+
+.product-modal-price {
+    font-size: 32px;
+    font-weight: 800;
+    color: #667eea;
+    margin-bottom: 20px;
+}
+
+.product-modal-description {
+    font-size: 15px;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.product-modal-actions {
+    padding: 0 30px 30px 30px;
+    display: flex;
+    gap: 12px;
+}
+
+.btn-back {
+    flex: 1;
+    padding: 14px 24px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.8);
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer !important;
+    transition: all 0.3s ease;
+    font-size: 15px;
+}
+
+.btn-back:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    cursor: pointer !important;
+}
+
+.btn-add-cart {
+    flex: 2;
+    padding: 14px 24px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    color: white;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer !important;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    font-size: 15px;
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+}
+
+.btn-add-cart:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+    cursor: pointer !important;
+}
+
+/* ========================================
+   NOTIFICACIÓN
+   ======================================== */
+#notification {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 16px 32px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 15px;
+    z-index: 1000;
+    box-shadow: 0 10px 40px rgba(102, 126, 234, 0.4);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#notification.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+/* ========================================
+   FPS COUNTER
+   ======================================== */
+#fpsCounter {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 10;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+@media (max-width: 768px) {
+    #instructions-hud {
+        top: 15px;
+        left: 15px;
+        padding: 15px 18px;
+    }
+
+    #instructions-hud h3 {
+        font-size: 14px;
+    }
+
+    #instructions-hud p {
+        font-size: 12px;
+    }
+
+    
+#cartPanel {
+        width: 90%;
+        max-width: 340px;
+        top: 15px;
+        right: 15px;
+    }
+
+    .product-modal-content {
+        width: 95%;
+    }
+}
+
+
+
+.product-price-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.qty-selector {
+  display: flex;
+  align-items: center;
+  background: rgba(255,255,255,0.06);
+  border-radius: 10px;
+  padding: 4px 8px;
+  font-size: 18px;
+}
+
+.qty-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px 10px;
+}
+
+.qty-btn:hover {
+  background: rgba(255,255,255,0.15);
+  border-radius: 6px;
+}
+
+#qty-value {
+  min-width: 20px;
+  text-align: center;
+  font-weight: bold;
+}
+
+
+/* float*/
+@keyframes floatSpin {
+  0%   { transform: translateY(0px) rotateY(0deg); }
+  50%  { transform: translateY(-20px) rotateY(15deg); }
+  100% { transform: translateY(0px) rotateY(0deg); }
+}
+
+#pauseOverlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+    pointer-events: none;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: grayscale(80%) brightness(0.45) blur(3px);
+    -webkit-backdrop-filter: grayscale(80%) brightness(0.45) blur(3px);
+}
+
+#pauseOverlay.active {
+    display: flex;
+}
+
+/* Contenedor central: PAUSA + hint apilados */
+#pauseCenter {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    pointer-events: none;
+    user-select: none;
+}
+
+#pauseLabel {
+    font-family: 'Arial Black', Arial, sans-serif;
+    font-size: clamp(48px, 8vw, 96px);
+    font-weight: 900;
+    letter-spacing: 0.15em;
+    color: #ffffff;
+    text-shadow:
+        0 0 30px rgba(255,255,255,0.6),
+        0 4px 12px rgba(0,0,0,0.8);
+    background: rgba(0, 0, 0, 0.35);
+    padding: 0.3em 0.8em;
+    border: 3px solid rgba(255,255,255,0.25);
+    border-radius: 12px;
+    user-select: none;
+    pointer-events: none;
+    animation: pausePulse 2s ease-in-out infinite;
+}
+
+@keyframes pausePulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.6; }
+}
+
+#pauseClickHint {
+    font-family: Arial, sans-serif;
+    font-size: 30px;
+    color: rgba(255,255,255,0.7);
+    letter-spacing: 0.05em;
+    pointer-events: none;
+    user-select: none;
+    text-align: center;
+}
+
+/* Flecha al carrito — aparece solo cuando el overlay está activo */
+#pauseCartArrow {
+    display: none;
+    position: fixed;
+    top: 55px;         /* misma altura que el carrito */
+    right: 390px;      /* justo a la izquierda del carrito (340px ancho + 30px margen + algo) */
+    align-items: center;
+    gap: 10px;
+    pointer-events: none;
+    user-select: none;
+    animation: arrowPulse 1.5s ease-in-out infinite;
+    z-index: 600;
+}
+
+#pauseOverlay.active ~ * #pauseCartArrow,
+#pauseOverlay.active + #pauseCartArrow {
+    display: flex;
+}
+
+/* Lo mostramos desde JS toggling la clase active en el arrow también */
+#pauseCartArrow.active {
+    display: flex;
+}
+
+#pauseCartArrow span {
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: #ffffff;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+    letter-spacing: 0.05em;
+}
+
+#pauseCartArrow svg {
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.6));
+}
+
+@keyframes arrowPulse {
+    0%, 100% { transform: translateX(0); opacity: 1; }
+    50%       { transform: translateX(8px); opacity: 0.7; }
+}
